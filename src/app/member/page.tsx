@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import { table } from "console";
 
 export default function Home() {
   const [members, setMembers] = useState([
@@ -16,13 +17,14 @@ export default function Home() {
       idProof: "Pan Card",
       idNumber: "",
       game: "Carrom",
+      table: 1,
       timeSlot: "6:00 pm to 7:00 pm",
     },
   ]);
 
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const handleMemberChange = (index:any, e:any) => {
+  const handleMemberChange = (index: any, e: any) => {
     const { name, value } = e.target;
     const updatedMembers = [...members];
     //@ts-ignore
@@ -45,16 +47,17 @@ export default function Home() {
         idProof: "Pan Card",
         idNumber: "",
         game: "Carrom",
+        table: 1,
         timeSlot: "6:00 pm to 7:00 pm",
       },
     ]);
   };
 
-  const handleAgreeToTermsChange = (e:any) => {
+  const handleAgreeToTermsChange = (e: any) => {
     setAgreeToTerms(e.target.checked);
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:5050/member", {
@@ -77,6 +80,7 @@ export default function Home() {
             idProof: "Pan Card",
             idNumber: "",
             game: "Carrom",
+            table: 1,
             timeSlot: "6:00 pm to 7:00 pm",
           },
         ]);
@@ -211,7 +215,9 @@ export default function Home() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-orange-600">Enter ID number</label>
+                  <label className="block text-orange-600">
+                    Enter ID number
+                  </label>
                   <input
                     type="text"
                     name="idNumber"
@@ -233,6 +239,18 @@ export default function Home() {
                     <option>Chess</option>
                     <option>Table Tennis</option>
                     <option>Badminton</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-orange-600">Select Table</label>
+                  <select
+                    name="table"
+                    value={member.table}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  >
+                    <option>1</option>
+                    <option>2</option>
                   </select>
                 </div>
                 <div>
@@ -273,8 +291,8 @@ export default function Home() {
                 I affirm that I have read and understood the rules of the game
                 zone and agree to abide by them. I acknowledge the inherent
                 risks involved in participating in activities within the game
-                zone and release the management from any liability. My health
-                is good, and I agree to follow staff instructions.
+                zone and release the management from any liability. My health is
+                good, and I agree to follow staff instructions.
               </p>
             </div>
             <div>

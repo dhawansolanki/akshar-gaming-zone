@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import { table } from "console";
 
 export default function Home() {
   const [members, setMembers] = useState([
@@ -14,12 +15,13 @@ export default function Home() {
       dob: "",
       anniversaryDate: "",
       game: "Carrom",
+      table: 1,
     },
   ]);
 
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const handleChange = (index:number, e:any) => {
+  const handleChange = (index: number, e: any) => {
     const { name, value } = e.target;
     const newMembers = [...members];
     newMembers[index] = {
@@ -42,20 +44,21 @@ export default function Home() {
         dob: "",
         anniversaryDate: "",
         game: "Carrom",
+        table: 1,
       },
     ]);
   };
 
-  const handleCheckboxChange = (e:any) => {
+  const handleCheckboxChange = (e: any) => {
     setAgreeToTerms(e.target.checked);
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
       // Group visitors by their respective groups
       const groupedVisitors = members.map((member) => [member]);
-      
+
       const response = await axios.post(
         "http://localhost:5050/visitor",
         { visitors: groupedVisitors, agreeToTerms }, // Send visitors grouped by their respective groups
@@ -169,7 +172,9 @@ export default function Home() {
                     />
                   </div>
                   <div>
-                    <label className="block text-orange-600">Anniversary Date</label>
+                    <label className="block text-orange-600">
+                      Anniversary Date
+                    </label>
                     <input
                       type="date"
                       name="anniversaryDate"
@@ -191,6 +196,18 @@ export default function Home() {
                     <option>Chess</option>
                     <option>Table Tennis</option>
                     <option>Badminton</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-orange-600">Select Table</label>
+                  <select
+                    name="table"
+                    value={member.table}
+                    onChange={(e) => handleChange(index, e)}
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  >
+                    <option>1</option>
+                    <option>2</option>
                   </select>
                 </div>
               </div>
