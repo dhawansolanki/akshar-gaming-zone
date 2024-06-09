@@ -237,7 +237,7 @@ export default function Home() {
                     <option>Pan Card</option>
                     <option>Aadhar Card</option>
                     <option>Passport</option>
-                    <option>Driver's License</option>
+                    <option>Driver&apos;s License</option>
                   </select>
                 </div>
                 <div className="py-4">
