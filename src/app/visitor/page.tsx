@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
       <div className="min-w-screen min-h-screen bg-white flex items-center justify-center px-5 py-5">
-        <div className="bg-white text-gray-800 rounded-xl shadow-lg overflow-hidden relative flex flex-col w-[414px] h-[736px]">
+        <div className="bg-white text-gray-800 rounded-xl overflow-hidden relative flex flex-col w-[414px] h-[736px]">
           <div className="bg-white h-full w-full px-5 pt-6 pb-20 overflow-y-auto">
             <div className="mb-5">
               <img src="/home1.png" className="w-full" />
