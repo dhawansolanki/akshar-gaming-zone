@@ -2,10 +2,9 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <>
       <div className="min-h-screen bg-white flex flex-col justify-between">
         <div className="bg-white text-gray-800 overflow-hidden relative flex-grow">
-          <div className="bg-white w-full px-5 overflow-y-auto">
+          <div className="bg-white w-full overflow-y-auto">
             <div className="mb-5">
               <img src="/home1.png" className="mx-auto" />
             </div>
@@ -57,6 +56,5 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </>
   );
 }
