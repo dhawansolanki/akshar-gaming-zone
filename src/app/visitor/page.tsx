@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { table } from "console";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
-  const [members, setMembers] = useState([
+  const [visitors, setVisitors] = useState([
     {
+      userId: uuidv4(),
       phoneNo: "",
       emailId: "",
       name: "",
@@ -20,21 +21,27 @@ export default function Home() {
   ]);
 
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [orderId, setOrderId] = useState("");
+
+  useEffect(() => {
+    setOrderId(uuidv4());
+  }, []);
 
   const handleChange = (index: number, e: any) => {
     const { name, value } = e.target;
-    const newMembers = [...members];
-    newMembers[index] = {
-      ...newMembers[index],
+    const newVisitors = [...visitors];
+    newVisitors[index] = {
+      ...newVisitors[index],
       [name]: value,
     };
-    setMembers(newMembers);
+    setVisitors(newVisitors);
   };
 
-  const handleAddMember = () => {
-    setMembers([
-      ...members,
+  const handleAddvisitor = () => {
+    setVisitors([
+      ...visitors,
       {
+        userId: uuidv4(),
         phoneNo: "",
         emailId: "",
         name: "",
@@ -56,12 +63,9 @@ export default function Home() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      // Group visitors by their respective groups
-      const groupedVisitors = members.map((member) => [member]);
-
       const response = await axios.post(
         "http://localhost:5050/visitor",
-        { visitors: groupedVisitors, agreeToTerms }, // Send visitors grouped by their respective groups
+        { visitors, agreeToTerms, orderId },
         {
           headers: {
             "Content-Type": "application/json",
@@ -95,7 +99,7 @@ export default function Home() {
             <img src="/form1.png" className="w-100" />
           </div>
           <form className="space-y-4 px-5 pt-6 pb-20" onSubmit={handleSubmit}>
-            {members.map((member, index) => (
+            {visitors.map((visitor, index) => (
               <div key={index}>
                 <h2 className="text-xl font-bold text-orange-600 mb-2">
                   {`Visitor ${index + 1}`}
@@ -105,7 +109,7 @@ export default function Home() {
                   <input
                     type="text"
                     name="phoneNo"
-                    value={member.phoneNo}
+                    value={visitor.phoneNo}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your mobile number"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
@@ -116,7 +120,7 @@ export default function Home() {
                   <input
                     type="email"
                     name="emailId"
-                    value={member.emailId}
+                    value={visitor.emailId}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Email ID"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
@@ -127,7 +131,7 @@ export default function Home() {
                   <input
                     type="text"
                     name="name"
-                    value={member.name}
+                    value={visitor.name}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Name"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
@@ -138,7 +142,7 @@ export default function Home() {
                   <input
                     type="text"
                     name="addressLine1"
-                    value={member.addressLine1}
+                    value={visitor.addressLine1}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Address line 1"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
@@ -146,7 +150,7 @@ export default function Home() {
                   <input
                     type="text"
                     name="addressLine2"
-                    value={member.addressLine2}
+                    value={visitor.addressLine2}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Address line 2"
                     className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
@@ -154,7 +158,7 @@ export default function Home() {
                   <input
                     type="text"
                     name="addressLine3"
-                    value={member.addressLine3}
+                    value={visitor.addressLine3}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Address line 3"
                     className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
@@ -166,7 +170,7 @@ export default function Home() {
                     <input
                       type="date"
                       name="dob"
-                      value={member.dob}
+                      value={visitor.dob}
                       onChange={(e) => handleChange(index, e)}
                       className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
                     />
@@ -178,7 +182,7 @@ export default function Home() {
                     <input
                       type="date"
                       name="anniversaryDate"
-                      value={member.anniversaryDate}
+                      value={visitor.anniversaryDate}
                       onChange={(e) => handleChange(index, e)}
                       className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
                     />
@@ -188,7 +192,7 @@ export default function Home() {
                   <label className="block text-orange-600">Select Game</label>
                   <select
                     name="game"
-                    value={member.game}
+                    value={visitor.game}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
                   >
@@ -202,7 +206,7 @@ export default function Home() {
                   <label className="block text-orange-600">Select Table</label>
                   <select
                     name="table"
-                    value={member.table}
+                    value={visitor.table}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
                   >
@@ -215,7 +219,7 @@ export default function Home() {
             <div>
               <button
                 type="button"
-                onClick={handleAddMember}
+                onClick={handleAddvisitor}
                 className="w-full bg-orange-600 text-white py-2 rounded-full mt-4"
               >
                 + Add Visitor
