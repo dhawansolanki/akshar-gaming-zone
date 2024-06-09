@@ -3,36 +3,84 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function Home() {
-  const [formData, setFormData] = useState({
-    phoneNo: "",
-    emailId: "",
-    name: "",
-    addressLine1: "",
-    addressLine2: "",
-    addressLine3: "",
-    dob: "",
-    anniversaryDate: "",
-    idProof: "Pan Card",
-    idNumber: "",
-    game: "Carrom",
-    timeSlot: "6:00 pm to 7:00 pm",
-    agreeToTerms: false,
-  });
+  const [members, setMembers] = useState([
+    {
+      phoneNo: "",
+      emailId: "",
+      name: "",
+      addressLine1: "",
+      addressLine2: "",
+      addressLine3: "",
+      dob: "",
+      anniversaryDate: "",
+      idProof: "Pan Card",
+      idNumber: "",
+      game: "Carrom",
+      timeSlot: "6:00 pm to 7:00 pm",
+    },
+  ]);
 
-  const handleChange = (e:any) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+
+  const handleMemberChange = (index:any, e:any) => {
+    const { name, value } = e.target;
+    const updatedMembers = [...members];
+    //@ts-ignore
+    updatedMembers[index][name] = value;
+    setMembers(updatedMembers);
+  };
+
+  const handleAddMember = () => {
+    setMembers([
+      ...members,
+      {
+        phoneNo: "",
+        emailId: "",
+        name: "",
+        addressLine1: "",
+        addressLine2: "",
+        addressLine3: "",
+        dob: "",
+        anniversaryDate: "",
+        idProof: "Pan Card",
+        idNumber: "",
+        game: "Carrom",
+        timeSlot: "6:00 pm to 7:00 pm",
+      },
+    ]);
+  };
+
+  const handleAgreeToTermsChange = (e:any) => {
+    setAgreeToTerms(e.target.checked);
   };
 
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5050/member", formData);
+      const response = await axios.post("http://localhost:5050/member", {
+        members,
+        agreeToTerms,
+      });
       if (response.status === 200) {
         console.log("Form submitted successfully");
+        // Reset form after successful submission if needed
+        setMembers([
+          {
+            phoneNo: "",
+            emailId: "",
+            name: "",
+            addressLine1: "",
+            addressLine2: "",
+            addressLine3: "",
+            dob: "",
+            anniversaryDate: "",
+            idProof: "Pan Card",
+            idNumber: "",
+            game: "Carrom",
+            timeSlot: "6:00 pm to 7:00 pm",
+          },
+        ]);
+        setAgreeToTerms(false);
       } else {
         console.log("Error submitting form");
       }
@@ -57,146 +105,156 @@ export default function Home() {
             <img src="/form1.png" className="w-100" />
           </div>
           <form className="space-y-4 px-5 pt-6 pb-20" onSubmit={handleSubmit}>
-            <div>
-              <label className="block text-orange-600">Phone No.</label>
-              <input
-                type="text"
-                name="phoneNo"
-                value={formData.phoneNo}
-                onChange={handleChange}
-                placeholder="Enter your mobile number"
-                className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              />
-            </div>
-            <div>
-              <label className="block text-orange-600">Email ID</label>
-              <input
-                type="email"
-                name="emailId"
-                value={formData.emailId}
-                onChange={handleChange}
-                placeholder="Enter your Email ID"
-                className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              />
-            </div>
-            <div>
-              <label className="block text-orange-600">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter your Name"
-                className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              />
-            </div>
-            <div>
-              <label className="block text-orange-600">Address</label>
-              <input
-                type="text"
-                name="addressLine1"
-                value={formData.addressLine1}
-                onChange={handleChange}
-                placeholder="Enter your Address line 1"
-                className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              />
-              <input
-                type="text"
-                name="addressLine2"
-                value={formData.addressLine2}
-                onChange={handleChange}
-                placeholder="Enter your Address line 2"
-                className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              />
-              <input
-                type="text"
-                name="addressLine3"
-                value={formData.addressLine3}
-                onChange={handleChange}
-                placeholder="Enter your Address line 3"
-                className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              />
-            </div>
-            <div className="flex space-x-4">
-              <div>
-                <label className="block text-orange-600">DOB</label>
-                <input
-                  type="date"
-                  name="dob"
-                  value={formData.dob}
-                  onChange={handleChange}
-                  className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-                />
+            {members.map((member, index) => (
+              <div key={index}>
+                <h2 className="text-xl font-bold text-orange-600 mb-2">
+                  {`Member ${index + 1}`}
+                </h2>
+                <div>
+                  <label className="block text-orange-600">Phone No.</label>
+                  <input
+                    type="text"
+                    name="phoneNo"
+                    value={member.phoneNo}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    placeholder="Enter your mobile number"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-orange-600">Email ID</label>
+                  <input
+                    type="email"
+                    name="emailId"
+                    value={member.emailId}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    placeholder="Enter your Email ID"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-orange-600">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={member.name}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    placeholder="Enter your Name"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-orange-600">Address</label>
+                  <input
+                    type="text"
+                    name="addressLine1"
+                    value={member.addressLine1}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    placeholder="Enter your Address line 1"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  />
+                  <input
+                    type="text"
+                    name="addressLine2"
+                    value={member.addressLine2}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    placeholder="Enter your Address line 2"
+                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  />
+                  <input
+                    type="text"
+                    name="addressLine3"
+                    value={member.addressLine3}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    placeholder="Enter your Address line 3"
+                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  />
+                </div>
+                <div className="flex space-x-4">
+                  <div>
+                    <label className="block text-orange-600">DOB</label>
+                    <input
+                      type="date"
+                      name="dob"
+                      value={member.dob}
+                      onChange={(e) => handleMemberChange(index, e)}
+                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-orange-600">
+                      Anniversary Date
+                    </label>
+                    <input
+                      type="date"
+                      name="anniversaryDate"
+                      value={member.anniversaryDate}
+                      onChange={(e) => handleMemberChange(index, e)}
+                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-orange-600">
+                    Select the ID Proof
+                  </label>
+                  <select
+                    name="idProof"
+                    value={member.idProof}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  >
+                    <option>Pan Card</option>
+                    <option>Aadhar Card</option>
+                    <option>Passport</option>
+                    <option>Driver&apos;s License</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-orange-600">Enter ID number</label>
+                  <input
+                    type="text"
+                    name="idNumber"
+                    value={member.idNumber}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    placeholder="Enter your ID number"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-orange-600">Select Game</label>
+                  <select
+                    name="game"
+                    value={member.game}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  >
+                    <option>Carrom</option>
+                    <option>Chess</option>
+                    <option>Table Tennis</option>
+                    <option>Badminton</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-orange-600">Time Slot</label>
+                  <select
+                    name="timeSlot"
+                    value={member.timeSlot}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                  >
+                    <option>6:00 pm to 7:00 pm</option>
+                    <option>7:00 pm to 8:00 pm</option>
+                    <option>8:00 pm to 9:00 pm</option>
+                  </select>
+                </div>
               </div>
-              <div>
-                <label className="block text-orange-600">
-                  Anniversary Date
-                </label>
-                <input
-                  type="date"
-                  name="anniversaryDate"
-                  value={formData.anniversaryDate}
-                  onChange={handleChange}
-                  className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-orange-600">Select the ID Proof</label>
-              <select
-                name="idProof"
-                value={formData.idProof}
-                onChange={handleChange}
-                className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              >
-                <option>Pan Card</option>
-                <option>Aadhar Card</option>
-                <option>Passport</option>
-                <option>Driver&apos;s License</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-orange-600">Enter ID number</label>
-              <input
-                type="text"
-                name="idNumber"
-                value={formData.idNumber}
-                onChange={handleChange}
-                placeholder="Enter your ID number"
-                className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              />
-            </div>
-            <div>
-              <label className="block text-orange-600">Select Game</label>
-              <select
-                name="game"
-                value={formData.game}
-                onChange={handleChange}
-                className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              >
-                <option>Carrom</option>
-                <option>Chess</option>
-                <option>Table Tennis</option>
-                <option>Badminton</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-orange-600">Time Slot</label>
-              <select
-                name="timeSlot"
-                value={formData.timeSlot}
-                onChange={handleChange}
-                className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
-              >
-                <option>6:00 pm to 7:00 pm</option>
-                <option>7:00 pm to 8:00 pm</option>
-                <option>8:00 pm to 9:00 pm</option>
-              </select>
-            </div>
+            ))}
             <div>
               <button
                 type="button"
                 className="w-full bg-orange-600 text-white py-2 rounded-full mt-4"
+                onClick={handleAddMember}
               >
                 + Add Member
               </button>
@@ -206,8 +264,8 @@ export default function Home() {
                 <input
                   type="checkbox"
                   name="agreeToTerms"
-                  checked={formData.agreeToTerms}
-                  onChange={handleChange}
+                  checked={agreeToTerms}
+                  onChange={handleAgreeToTermsChange}
                   className="form-checkbox text-orange-600"
                 />
               </div>

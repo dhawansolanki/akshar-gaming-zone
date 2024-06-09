@@ -53,9 +53,12 @@ export default function Home() {
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     try {
+      // Group visitors by their respective groups
+      const groupedVisitors = members.map((member) => [member]);
+      
       const response = await axios.post(
         "http://localhost:5050/visitor",
-        { members, agreeToTerms },
+        { visitors: groupedVisitors, agreeToTerms }, // Send visitors grouped by their respective groups
         {
           headers: {
             "Content-Type": "application/json",
