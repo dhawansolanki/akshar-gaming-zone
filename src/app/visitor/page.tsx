@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
   const [visitors, setVisitors] = useState([
@@ -26,6 +28,8 @@ export default function Home() {
   useEffect(() => {
     setOrderId(uuidv4());
   }, []);
+
+  const notify = (message: string) => toast(message);
 
   const handleChange = (index: number, e: any) => {
     const { name, value } = e.target;
@@ -74,11 +78,12 @@ export default function Home() {
       );
 
       if (response.status === 200) {
-        console.log("Form submitted successfully");
+        notify("Form submitted successfully");
       } else {
-        console.log("Error submitting form");
+        notify("Error submitting form");
       }
     } catch (error) {
+      notify("Error submitting form");
       console.error("Error:", error);
     }
   };
@@ -99,6 +104,18 @@ export default function Home() {
             <img src="/form1.png" className="w-100" />
           </div>
           <form className="space-y-4 px-5 pt-6 pb-20" onSubmit={handleSubmit}>
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
             {visitors.map((visitor, index) => (
               <div key={index}>
                 <h2 className="text-xl font-bold text-orange-600 mb-2">
