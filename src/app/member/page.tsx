@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { table } from "console";
 import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,10 +34,10 @@ export default function Home() {
 
   const notify = (message: string) => toast(message);
 
-  const handleMemberChange = (index: any, e: any) => {
+  const handleMemberChange = (index:number, e:any) => {
     const { name, value } = e.target;
     const updatedMembers = [...members];
-    //@ts-ignore
+    // @ts-ignore
     updatedMembers[index][name] = value;
     setMembers(updatedMembers);
   };
@@ -65,11 +64,11 @@ export default function Home() {
     ]);
   };
 
-  const handleAgreeToTermsChange = (e: any) => {
+  const handleAgreeToTermsChange = (e:any) => {
     setAgreeToTerms(e.target.checked);
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:5050/member", {
@@ -141,7 +140,7 @@ export default function Home() {
                 <h2 className="text-xl font-bold text-orange-600 mb-2">
                   {`Member ${index + 1}`}
                 </h2>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Phone No.</label>
                   <input
                     type="text"
@@ -149,10 +148,10 @@ export default function Home() {
                     value={member.phoneNo}
                     onChange={(e) => handleMemberChange(index, e)}
                     placeholder="Enter your mobile number"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Email ID</label>
                   <input
                     type="email"
@@ -160,10 +159,10 @@ export default function Home() {
                     value={member.emailId}
                     onChange={(e) => handleMemberChange(index, e)}
                     placeholder="Enter your Email ID"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Name</label>
                   <input
                     type="text"
@@ -171,10 +170,10 @@ export default function Home() {
                     value={member.name}
                     onChange={(e) => handleMemberChange(index, e)}
                     placeholder="Enter your Name"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Address</label>
                   <input
                     type="text"
@@ -182,7 +181,7 @@ export default function Home() {
                     value={member.addressLine1}
                     onChange={(e) => handleMemberChange(index, e)}
                     placeholder="Enter your Address line 1"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                   <input
                     type="text"
@@ -190,7 +189,7 @@ export default function Home() {
                     value={member.addressLine2}
                     onChange={(e) => handleMemberChange(index, e)}
                     placeholder="Enter your Address line 2"
-                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                   <input
                     type="text"
@@ -198,21 +197,21 @@ export default function Home() {
                     value={member.addressLine3}
                     onChange={(e) => handleMemberChange(index, e)}
                     placeholder="Enter your Address line 3"
-                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
                 <div className="flex space-x-4">
-                  <div>
+                <div className="py-4">
                     <label className="block text-orange-600">DOB</label>
                     <input
                       type="date"
                       name="dob"
                       value={member.dob}
                       onChange={(e) => handleMemberChange(index, e)}
-                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                     />
                   </div>
-                  <div>
+                  <div className="py-4">
                     <label className="block text-orange-600">
                       Anniversary Date
                     </label>
@@ -221,11 +220,11 @@ export default function Home() {
                       name="anniversaryDate"
                       value={member.anniversaryDate}
                       onChange={(e) => handleMemberChange(index, e)}
-                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                     />
                   </div>
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">
                     Select the ID Proof
                   </label>
@@ -233,15 +232,15 @@ export default function Home() {
                     name="idProof"
                     value={member.idProof}
                     onChange={(e) => handleMemberChange(index, e)}
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   >
                     <option>Pan Card</option>
                     <option>Aadhar Card</option>
                     <option>Passport</option>
-                    <option>Driver&apos;s License</option>
+                    <option>Driver's License</option>
                   </select>
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">
                     Enter ID number
                   </label>
@@ -251,16 +250,16 @@ export default function Home() {
                     value={member.idNumber}
                     onChange={(e) => handleMemberChange(index, e)}
                     placeholder="Enter your ID number"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Select Game</label>
                   <select
                     name="game"
                     value={member.game}
                     onChange={(e) => handleMemberChange(index, e)}
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   >
                     <option>Carrom</option>
                     <option>Chess</option>
@@ -268,25 +267,25 @@ export default function Home() {
                     <option>Badminton</option>
                   </select>
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Select Table</label>
                   <select
                     name="table"
                     value={member.table}
                     onChange={(e) => handleMemberChange(index, e)}
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   >
                     <option>1</option>
                     <option>2</option>
                   </select>
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Time Slot</label>
                   <select
                     name="timeSlot"
                     value={member.timeSlot}
                     onChange={(e) => handleMemberChange(index, e)}
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   >
                     <option>6:00 pm to 7:00 pm</option>
                     <option>7:00 pm to 8:00 pm</option>
@@ -295,7 +294,7 @@ export default function Home() {
                 </div>
               </div>
             ))}
-            <div>
+            <div className="py-4">
               <button
                 type="button"
                 className="w-full bg-orange-600 text-white py-2 rounded-full mt-4"

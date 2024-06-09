@@ -3,25 +3,24 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 
 export default function Home() {
-  const [visitors, setVisitors] = useState([
-    {
-      userId: uuidv4(),
-      phoneNo: "",
-      emailId: "",
-      name: "",
-      addressLine1: "",
-      addressLine2: "",
-      addressLine3: "",
-      dob: "",
-      anniversaryDate: "",
-      game: "Carrom",
-      table: 1,
-    },
-  ]);
+  const initialVisitor = {
+    userId: uuidv4(),
+    phoneNo: "",
+    emailId: "",
+    name: "",
+    addressLine1: "",
+    addressLine2: "",
+    addressLine3: "",
+    dob: "",
+    anniversaryDate: "",
+    game: "Carrom",
+    table: 1,
+  };
 
+  const [visitors, setVisitors] = useState([initialVisitor]);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [orderId, setOrderId] = useState("");
 
@@ -29,9 +28,15 @@ export default function Home() {
     setOrderId(uuidv4());
   }, []);
 
-  const notify = (message: string) => toast(message);
+  const notify = (message:string, type:string) => {
+    if (type === "success") {
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
+  };
 
-  const handleChange = (index: number, e: any) => {
+  const handleChange = (index:number, e:any) => {
     const { name, value } = e.target;
     const newVisitors = [...visitors];
     newVisitors[index] = {
@@ -41,30 +46,15 @@ export default function Home() {
     setVisitors(newVisitors);
   };
 
-  const handleAddvisitor = () => {
-    setVisitors([
-      ...visitors,
-      {
-        userId: uuidv4(),
-        phoneNo: "",
-        emailId: "",
-        name: "",
-        addressLine1: "",
-        addressLine2: "",
-        addressLine3: "",
-        dob: "",
-        anniversaryDate: "",
-        game: "Carrom",
-        table: 1,
-      },
-    ]);
+  const handleAddVisitor = () => {
+    setVisitors([...visitors, { ...initialVisitor, userId: uuidv4() }]);
   };
 
-  const handleCheckboxChange = (e: any) => {
+  const handleCheckboxChange = (e:any) => {
     setAgreeToTerms(e.target.checked);
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
     try {
       const response = await axios.post(
@@ -78,14 +68,21 @@ export default function Home() {
       );
 
       if (response.status === 200) {
-        notify("Form submitted successfully");
+        notify("Form submitted successfully", "success");
+        resetForm();
       } else {
-        notify("Error submitting form");
+        notify("Error submitting form", "error");
       }
     } catch (error) {
-      notify("Error submitting form");
+      notify("Error submitting form", "error");
       console.error("Error:", error);
     }
+  };
+
+  const resetForm = () => {
+    setVisitors([initialVisitor]);
+    setAgreeToTerms(false);
+    setOrderId(uuidv4());
   };
 
   return (
@@ -121,7 +118,7 @@ export default function Home() {
                 <h2 className="text-xl font-bold text-orange-600 mb-2">
                   {`Visitor ${index + 1}`}
                 </h2>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Phone No.</label>
                   <input
                     type="text"
@@ -129,10 +126,10 @@ export default function Home() {
                     value={visitor.phoneNo}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your mobile number"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Email ID</label>
                   <input
                     type="email"
@@ -140,10 +137,10 @@ export default function Home() {
                     value={visitor.emailId}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Email ID"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Name</label>
                   <input
                     type="text"
@@ -151,10 +148,10 @@ export default function Home() {
                     value={visitor.name}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Name"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Address</label>
                   <input
                     type="text"
@@ -162,7 +159,7 @@ export default function Home() {
                     value={visitor.addressLine1}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Address line 1"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                   <input
                     type="text"
@@ -170,7 +167,7 @@ export default function Home() {
                     value={visitor.addressLine2}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Address line 2"
-                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                   <input
                     type="text"
@@ -178,21 +175,21 @@ export default function Home() {
                     value={visitor.addressLine3}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Address line 3"
-                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
                 <div className="flex space-x-4">
-                  <div>
+                <div className="py-4">
                     <label className="block text-orange-600">DOB</label>
                     <input
                       type="date"
                       name="dob"
                       value={visitor.dob}
                       onChange={(e) => handleChange(index, e)}
-                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                     />
                   </div>
-                  <div>
+                  <div className="py-4">
                     <label className="block text-orange-600">
                       Anniversary Date
                     </label>
@@ -201,17 +198,17 @@ export default function Home() {
                       name="anniversaryDate"
                       value={visitor.anniversaryDate}
                       onChange={(e) => handleChange(index, e)}
-                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                     />
                   </div>
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Select Game</label>
                   <select
                     name="game"
                     value={visitor.game}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   >
                     <option>Carrom</option>
                     <option>Chess</option>
@@ -219,13 +216,13 @@ export default function Home() {
                     <option>Badminton</option>
                   </select>
                 </div>
-                <div>
+                <div className="py-4">
                   <label className="block text-orange-600">Select Table</label>
                   <select
                     name="table"
                     value={visitor.table}
                     onChange={(e) => handleChange(index, e)}
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600"
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   >
                     <option>1</option>
                     <option>2</option>
@@ -236,7 +233,7 @@ export default function Home() {
             <div>
               <button
                 type="button"
-                onClick={handleAddvisitor}
+                onClick={handleAddVisitor}
                 className="w-full bg-orange-600 text-white py-2 rounded-full mt-4"
               >
                 + Add Visitor
