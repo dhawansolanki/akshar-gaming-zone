@@ -6,6 +6,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 
 export default function Home() {
+  const gameOptions = [
+    "Air Hockey",
+    "Box Cricket",
+    "Carrom",
+    "Chess",
+    "Ludo",
+    "Pool",
+    "Snakes & Ladders",
+    "Table Tennis",
+  ];
+
   const initialVisitor = {
     userId: uuidv4(),
     phoneNo: "",
@@ -16,7 +27,7 @@ export default function Home() {
     addressLine3: "",
     dob: "",
     anniversaryDate: "",
-    game: "Carrom",
+    game: "",
   };
 
   const [visitors, setVisitors] = useState([initialVisitor]);
@@ -209,10 +220,11 @@ export default function Home() {
                     onChange={(e) => handleChange(index, e)}
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   >
-                    <option>Carrom</option>
-                    <option>Chess</option>
-                    <option>Table Tennis</option>
-                    <option>Badminton</option>
+                    {gameOptions.map((option, idx) => (
+                      <option key={idx} value={option}>
+                        {option}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
