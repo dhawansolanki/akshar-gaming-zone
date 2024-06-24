@@ -51,7 +51,14 @@ export default function Home() {
 
   useEffect(() => {
     setOrderId(uuidv4());
-  }, []);
+    const today = new Date().toISOString().split("T")[0];
+    members.forEach((member, index) => {
+      //@ts-ignore
+      document.getElementById(`dob-${index}`).setAttribute("max", today);
+      //@ts-ignore
+      document.getElementById(`anniversaryDate-${index}`).setAttribute("max", today);
+    });
+  }, [members]);
 
   const notify = (message: string) => toast(message);
 
@@ -228,6 +235,7 @@ export default function Home() {
                     <input
                       type="date"
                       name="dob"
+                      id={`dob-${index}`}
                       value={member.dob}
                       onChange={(e) => handleMemberChange(index, e)}
                       className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
@@ -240,6 +248,7 @@ export default function Home() {
                     <input
                       type="date"
                       name="anniversaryDate"
+                      id={`anniversaryDate-${index}`}
                       value={member.anniversaryDate}
                       onChange={(e) => handleMemberChange(index, e)}
                       className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
