@@ -58,7 +58,7 @@ export default function Home() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://akshar-gaming-zone-backend.vercel.app/visitor",
+        "https://api.aksharenterprise.net/visitor",
         { visitors, agreeToTerms, orderId },
         {
           headers: {

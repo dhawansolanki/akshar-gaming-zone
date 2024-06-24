@@ -72,7 +72,7 @@ export default function Home() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://akshar-gaming-zone-backend.vercel.app/member",
+        "https://api.aksharenterprise.net/member",
         {
           members,
           agreeToTerms,
