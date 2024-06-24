@@ -28,7 +28,7 @@ export default function Home() {
     setOrderId(uuidv4());
   }, []);
 
-  const notify = (message:string, type:string) => {
+  const notify = (message: string, type: string) => {
     if (type === "success") {
       toast.success(message);
     } else {
@@ -36,7 +36,7 @@ export default function Home() {
     }
   };
 
-  const handleChange = (index:number, e:any) => {
+  const handleChange = (index: number, e: any) => {
     const { name, value } = e.target;
     const newVisitors = [...visitors];
     newVisitors[index] = {
@@ -50,15 +50,15 @@ export default function Home() {
     setVisitors([...visitors, { ...initialVisitor, userId: uuidv4() }]);
   };
 
-  const handleCheckboxChange = (e:any) => {
+  const handleCheckboxChange = (e: any) => {
     setAgreeToTerms(e.target.checked);
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5050/visitor",
+        "https://akshar-gaming-zone-backend.vercel.app/visitor",
         { visitors, agreeToTerms, orderId },
         {
           headers: {
@@ -179,7 +179,7 @@ export default function Home() {
                   />
                 </div>
                 <div className="flex space-x-4">
-                <div className="py-4">
+                  <div className="py-4">
                     <label className="block text-orange-600">DOB</label>
                     <input
                       type="date"

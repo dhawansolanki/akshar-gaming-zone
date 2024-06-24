@@ -34,7 +34,7 @@ export default function Home() {
 
   const notify = (message: string) => toast(message);
 
-  const handleMemberChange = (index:number, e:any) => {
+  const handleMemberChange = (index: number, e: any) => {
     const { name, value } = e.target;
     const updatedMembers = [...members];
     // @ts-ignore
@@ -64,18 +64,21 @@ export default function Home() {
     ]);
   };
 
-  const handleAgreeToTermsChange = (e:any) => {
+  const handleAgreeToTermsChange = (e: any) => {
     setAgreeToTerms(e.target.checked);
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5050/member", {
-        members,
-        agreeToTerms,
-        orderId,
-      });
+      const response = await axios.post(
+        "https://akshar-gaming-zone-backend.vercel.app/member",
+        {
+          members,
+          agreeToTerms,
+          orderId,
+        }
+      );
       if (response.status === 200) {
         notify("Form submitted successfully!");
         // Reset form after successful submission if needed
@@ -201,7 +204,7 @@ export default function Home() {
                   />
                 </div>
                 <div className="flex space-x-4">
-                <div className="py-4">
+                  <div className="py-4">
                     <label className="block text-orange-600">DOB</label>
                     <input
                       type="date"
