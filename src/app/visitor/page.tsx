@@ -17,7 +17,6 @@ export default function Home() {
     dob: "",
     anniversaryDate: "",
     game: "Carrom",
-    table: 1,
   };
 
   const [visitors, setVisitors] = useState([initialVisitor]);
@@ -214,18 +213,6 @@ export default function Home() {
                     <option>Chess</option>
                     <option>Table Tennis</option>
                     <option>Badminton</option>
-                  </select>
-                </div>
-                <div className="py-4">
-                  <label className="block text-orange-600">Select Table</label>
-                  <select
-                    name="table"
-                    value={visitor.table}
-                    onChange={(e) => handleChange(index, e)}
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
-                  >
-                    <option>1</option>
-                    <option>2</option>
                   </select>
                 </div>
               </div>
