@@ -4,21 +4,29 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const router = useRouter()
+  const router = useRouter();
+  const idProofOptions = [
+    "Pan Card",
+    "Aadhar Card",
+    "Passport",
+    "Driver's License",
+  ];
   const initialVisitor = {
     userId: uuidv4(),
     name: "",
     phoneNo: "",
     emailId: "",
+    password: "",
     addressLine1: "",
     addressLine2: "",
     addressLine3: "",
     dob: "",
     anniversaryDate: "",
-    password: "",
+    idProof: "",
+    idNumber: "",
   };
 
   const [visitor, setVisitor] = useState(initialVisitor);
@@ -50,7 +58,7 @@ export default function Home() {
       const response = await axios.post(
         "https://api.aksharenterprise.net/user/signup",
         {
-          ...visitor
+          ...visitor,
         },
         {
           headers: {
@@ -61,7 +69,7 @@ export default function Home() {
       if (response.status === 200) {
         notify("Form submitted successfully", "success");
         resetForm();
-        router.push('/login')
+        router.push("/login");
       } else {
         notify("Error submitting form", "error");
       }
@@ -131,6 +139,17 @@ export default function Home() {
                 />
               </div>
               <div className="py-4">
+                <label className="block text-orange-600">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={visitor.password}
+                  onChange={handleChange}
+                  placeholder="Enter your Password"
+                  className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
+                />
+              </div>
+              <div className="py-4">
                 <label className="block text-orange-600">Address</label>
                 <input
                   type="text"
@@ -182,13 +201,30 @@ export default function Home() {
                 </div>
               </div>
               <div className="py-4">
-                <label className="block text-orange-600">Password</label>
+                <label className="block text-orange-600">
+                  Select the ID Proof
+                </label>
+                <select
+                  name="idProof"
+                  value={visitor.idProof}
+                  onChange={(e) => handleChange}
+                  className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
+                >
+                  {idProofOptions.map((option, idx) => (
+                    <option key={idx} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="py-4">
+                <label className="block text-orange-600">Enter ID number</label>
                 <input
-                  type="password"
-                  name="password"
-                  value={visitor.password}
-                  onChange={handleChange}
-                  placeholder="Enter your Password"
+                  type="text"
+                  name="idNumber"
+                  value={visitor.idNumber}
+                  onChange={(e) => handleChange}
+                  placeholder="Enter your ID number"
                   className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                 />
               </div>

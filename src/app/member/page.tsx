@@ -4,19 +4,13 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useRouter } from 'next/navigation'
-import Cookies from 'universal-cookie';
+import { useRouter } from "next/navigation";
+import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
 export default function Home() {
-  const router = useRouter()
-  const idProofOptions = [
-    "Pan Card",
-    "Aadhar Card",
-    "Passport",
-    "Driver's License",
-  ];
+  const router = useRouter();
   const gameOptions = [
     "Air Hockey",
     "Box Cricket",
@@ -39,13 +33,6 @@ export default function Home() {
       phoneNo: "",
       emailId: "",
       name: "",
-      addressLine1: "",
-      addressLine2: "",
-      addressLine3: "",
-      dob: "",
-      anniversaryDate: "",
-      idProof: "",
-      idNumber: "",
       game: "",
       timeSlot: "",
     },
@@ -55,21 +42,14 @@ export default function Home() {
   const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
-    const userId = cookies.get('userId');
-    const identifier = cookies.get('identifier');
-    const token = cookies.get('token');
+    const userId = cookies.get("userId");
+    const identifier = cookies.get("identifier");
+    const token = cookies.get("token");
     if (!userId || !identifier || !token) {
-      router.push('/login')
+      router.push("/login");
     }
     setOrderId(uuidv4());
-    const today = new Date().toISOString().split("T")[0];
-    members.forEach((member, index) => {
-      //@ts-ignore
-      document.getElementById(`dob-${index}`).setAttribute("max", today);
-      //@ts-ignore
-      document.getElementById(`anniversaryDate-${index}`).setAttribute("max", today);
-    });
-  }, [members]);
+  }, []);
 
   const notify = (message: string) => toast(message);
 
@@ -89,13 +69,6 @@ export default function Home() {
         phoneNo: "",
         emailId: "",
         name: "",
-        addressLine1: "",
-        addressLine2: "",
-        addressLine3: "",
-        dob: "",
-        anniversaryDate: "",
-        idProof: "",
-        idNumber: "",
         game: "",
         timeSlot: "",
       },
@@ -126,13 +99,6 @@ export default function Home() {
             phoneNo: "",
             emailId: "",
             name: "",
-            addressLine1: "",
-            addressLine2: "",
-            addressLine3: "",
-            dob: "",
-            anniversaryDate: "",
-            idProof: "",
-            idNumber: "",
             game: "",
             timeSlot: "",
           },
@@ -210,89 +176,6 @@ export default function Home() {
                     value={member.name}
                     onChange={(e) => handleMemberChange(index, e)}
                     placeholder="Enter your Name"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
-                  />
-                </div>
-                <div className="py-4">
-                  <label className="block text-orange-600">Address</label>
-                  <input
-                    type="text"
-                    name="addressLine1"
-                    value={member.addressLine1}
-                    onChange={(e) => handleMemberChange(index, e)}
-                    placeholder="Enter your Address line 1"
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
-                  />
-                  <input
-                    type="text"
-                    name="addressLine2"
-                    value={member.addressLine2}
-                    onChange={(e) => handleMemberChange(index, e)}
-                    placeholder="Enter your Address line 2"
-                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
-                  />
-                  <input
-                    type="text"
-                    name="addressLine3"
-                    value={member.addressLine3}
-                    onChange={(e) => handleMemberChange(index, e)}
-                    placeholder="Enter your Address line 3"
-                    className="w-full mt-2 border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
-                  />
-                </div>
-                <div className="flex space-x-4">
-                  <div className="py-4">
-                    <label className="block text-orange-600">DOB</label>
-                    <input
-                      type="date"
-                      name="dob"
-                      id={`dob-${index}`}
-                      value={member.dob}
-                      onChange={(e) => handleMemberChange(index, e)}
-                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
-                    />
-                  </div>
-                  <div className="py-4">
-                    <label className="block text-orange-600">
-                      Anniversary Date
-                    </label>
-                    <input
-                      type="date"
-                      name="anniversaryDate"
-                      id={`anniversaryDate-${index}`}
-                      value={member.anniversaryDate}
-                      onChange={(e) => handleMemberChange(index, e)}
-                      className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
-                    />
-                  </div>
-                </div>
-                <div className="py-4">
-                  <label className="block text-orange-600">
-                    Select the ID Proof
-                  </label>
-                  <select
-                    name="idProof"
-                    value={member.idProof}
-                    onChange={(e) => handleMemberChange(index, e)}
-                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
-                  >
-                    {idProofOptions.map((option, idx) => (
-                      <option key={idx} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="py-4">
-                  <label className="block text-orange-600">
-                    Enter ID number
-                  </label>
-                  <input
-                    type="text"
-                    name="idNumber"
-                    value={member.idNumber}
-                    onChange={(e) => handleMemberChange(index, e)}
-                    placeholder="Enter your ID number"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
