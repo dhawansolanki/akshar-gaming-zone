@@ -4,8 +4,10 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
+  const router = useRouter()
   const initialVisitor = {
     userId: uuidv4(),
     name: "",
@@ -48,8 +50,7 @@ export default function Home() {
       const response = await axios.post(
         "https://api.aksharenterprise.net/user/signup",
         {
-          ...visitor,
-          agreeToTerms,
+          ...visitor
         },
         {
           headers: {
@@ -60,6 +61,7 @@ export default function Home() {
       if (response.status === 200) {
         notify("Form submitted successfully", "success");
         resetForm();
+        router.push('/login')
       } else {
         notify("Error submitting form", "error");
       }

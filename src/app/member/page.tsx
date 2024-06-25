@@ -4,8 +4,13 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from 'next/navigation'
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 export default function Home() {
+  const router = useRouter()
   const idProofOptions = [
     "Pan Card",
     "Aadhar Card",
@@ -50,6 +55,12 @@ export default function Home() {
   const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
+    const userId = cookies.get('userId');
+    const identifier = cookies.get('identifier');
+    const token = cookies.get('token');
+    if (!userId || !identifier || !token) {
+      router.push('/login')
+    }
     setOrderId(uuidv4());
     const today = new Date().toISOString().split("T")[0];
     members.forEach((member, index) => {

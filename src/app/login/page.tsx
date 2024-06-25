@@ -3,8 +3,13 @@ import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
+import { useRouter } from 'next/navigation'
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 export default function Home() {
+  const router = useRouter()
   const initialVisitor = {
     identifier: "", // Changed to identifier to accept phoneNo or emailId
     password: "",
@@ -43,9 +48,13 @@ export default function Home() {
         }
       );
       if (response.status === 200) {
+        const { userId, identifier, token } = response.data;
         notify("Logged in successfully", "success");
         resetForm();
-        // Redirect or handle successful login action here
+        cookies.set('userId', userId, { path: '/' });
+        cookies.set('identifier', identifier, { path: '/' });
+        cookies.set('token', token, { path: '/' });
+        router.push('/member')
       }
     } catch (error) {
       const message =
