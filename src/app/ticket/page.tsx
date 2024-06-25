@@ -11,16 +11,35 @@ const cookies = new Cookies();
 
 export default function Home() {
   const router = useRouter();
+  const gameOptions = [
+    "Air Hockey",
+    "Box Cricket",
+    "Carrom",
+    "Chess",
+    "Ludo",
+    "Pool",
+    "Snakes & Ladders",
+    "Table Tennis",
+  ];
+  const timeSlotOptions = [
+    "6:00 pm to 7:00 pm",
+    "7:00 pm to 8:00 pm",
+    "8:00 pm to 9:00 pm",
+  ];
+
   const initialMember = {
     userId: cookies.get("userId") || uuidv4(),
     phoneNo: "",
     emailId: "",
     name: "",
+    game: "",
+    timeSlot: "",
   };
 
   const [members, setMembers] = useState([initialMember]);
 
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
     const userId = cookies.get("userId");
@@ -29,6 +48,7 @@ export default function Home() {
     if (!userId || !identifier || !token) {
       router.push("/login");
     }
+    setOrderId(uuidv4());
 
     const fetchUserDetails = async () => {
       try {
@@ -74,6 +94,8 @@ export default function Home() {
         phoneNo: "",
         emailId: "",
         name: "",
+        game: "",
+        timeSlot: "",
       },
     ]);
   };
@@ -90,6 +112,7 @@ export default function Home() {
         {
           members,
           agreeToTerms,
+          orderId,
         }
       );
       if (response.status === 200) {
@@ -175,6 +198,36 @@ export default function Home() {
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
+                <div className="py-4">
+                  <label className="block text-orange-600">Select Game</label>
+                  <select
+                    name="game"
+                    value={member.game}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
+                  >
+                    {gameOptions.map((option, idx) => (
+                      <option key={idx} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="py-4">
+                  <label className="block text-orange-600">Time Slot</label>
+                  <select
+                    name="timeSlot"
+                    value={member.timeSlot}
+                    onChange={(e) => handleMemberChange(index, e)}
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
+                  >
+                    {timeSlotOptions.map((option, idx) => (
+                      <option key={idx} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             ))}
             <div className="py-4">
@@ -183,7 +236,7 @@ export default function Home() {
                 className="w-full bg-orange-600 text-white py-2 rounded-full mt-4"
                 onClick={handleAddMember}
               >
-                + Add New Member
+                + Add Member
               </button>
             </div>
             <div className="mt-4">
@@ -209,15 +262,7 @@ export default function Home() {
                 type="submit"
                 className="w-full bg-orange-600 text-white py-3 rounded-full mt-4"
               >
-                Save Member
-              </button>
-            </div>
-            <div>
-              <button
-              onClick={(e:any)=>{window.location.href="/ticket"}}
-                className="w-full bg-orange-600 text-white py-3 rounded-full mt-4"
-              >
-                Proceed to Ticker Counter
+                Proceed to Payment
               </button>
             </div>
           </form>
