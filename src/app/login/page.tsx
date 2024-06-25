@@ -48,8 +48,8 @@ export default function Home() {
         // Redirect or handle successful login action here
       }
     } catch (error) {
-      //@ts-ignore
       const message =
+      //@ts-ignore
         error?.response?.data?.error ||
         "Something went wrong. Please try again.";
       notify(message, "error");
