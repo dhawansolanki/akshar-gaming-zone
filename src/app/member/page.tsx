@@ -27,16 +27,16 @@ export default function Home() {
     "8:00 pm to 9:00 pm",
   ];
 
-  const [members, setMembers] = useState([
-    {
-      userId: uuidv4(),
-      phoneNo: "",
-      emailId: "",
-      name: "",
-      game: "",
-      timeSlot: "",
-    },
-  ]);
+  const initialMember = {
+    userId: cookies.get("userId") || uuidv4(),
+    phoneNo: "",
+    emailId: "",
+    name: "",
+    game: "",
+    timeSlot: "",
+  };
+
+  const [members, setMembers] = useState([initialMember]);
 
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -49,6 +49,31 @@ export default function Home() {
       router.push("/login");
     }
     setOrderId(uuidv4());
+
+    const fetchUserDetails = async () => {
+      try {
+        const userId = cookies.get("userId");
+        if (userId) {
+          const response = await axios.get(
+            `https://api.aksharenterprise.net/user/${userId}`
+          );
+          const userData = response.data;
+          setMembers((prevMembers) => [
+            {
+              ...prevMembers[0],
+              phoneNo: userData.phoneNo,
+              emailId: userData.emailId,
+              name: userData.name,
+            },
+            ...prevMembers.slice(1),
+          ]);
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchUserDetails();
   }, []);
 
   const notify = (message: string) => toast(message);
@@ -93,16 +118,7 @@ export default function Home() {
       if (response.status === 200) {
         notify("Form submitted successfully!");
         // Reset form after successful submission if needed
-        setMembers([
-          {
-            userId: uuidv4(),
-            phoneNo: "",
-            emailId: "",
-            name: "",
-            game: "",
-            timeSlot: "",
-          },
-        ]);
+        setMembers([initialMember]);
         setAgreeToTerms(false);
       } else {
         notify("Error submitting form!");
@@ -153,6 +169,7 @@ export default function Home() {
                     name="phoneNo"
                     value={member.phoneNo}
                     onChange={(e) => handleMemberChange(index, e)}
+                    readOnly={index === 0}
                     placeholder="Enter your mobile number"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
@@ -164,6 +181,7 @@ export default function Home() {
                     name="emailId"
                     value={member.emailId}
                     onChange={(e) => handleMemberChange(index, e)}
+                    readOnly={index === 0}
                     placeholder="Enter your Email ID"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
@@ -175,6 +193,7 @@ export default function Home() {
                     name="name"
                     value={member.name}
                     onChange={(e) => handleMemberChange(index, e)}
+                    readOnly={index === 0}
                     placeholder="Enter your Name"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
