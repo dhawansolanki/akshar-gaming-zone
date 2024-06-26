@@ -7,14 +7,14 @@ import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 
 export default function Home() {
   const gameOptions = [
-    "Air Hockey",
-    "Box Cricket",
-    "Carrom",
-    "Chess",
-    "Ludo",
-    "Pool",
-    "Snakes & Ladders",
-    "Table Tennis",
+    { name: "Air Hockey", duration: 15 },
+    { name: "Box Cricket", duration: 20 },
+    { name: "Carrom", duration: 60 },
+    { name: "Chess", duration: 60 },
+    { name: "Ludo", duration: 60 },
+    { name: "Pool", duration: 60 },
+    { name: "Snakes & Ladders", duration: 60 },
+    { name: "Table Tennis", duration: 60 },
   ];
 
   const initialVisitor = {
@@ -28,11 +28,27 @@ export default function Home() {
     dob: "",
     anniversaryDate: "",
     game: "",
+    startTime: "",
+    endTime: "",
   };
+
+  const gamePrices = {
+    "Air Hockey": 100,
+    "Box Cricket": 200,
+    Carrom: 50,
+    Chess: 75,
+    Ludo: 30,
+    Pool: 150,
+    "Snakes & Ladders": 40,
+    "Table Tennis": 100,
+  };
+
+  const discount = 0.5; // 50% discount
 
   const [visitors, setVisitors] = useState([initialVisitor]);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     setOrderId(uuidv4());
@@ -41,8 +57,14 @@ export default function Home() {
       //@ts-ignore
       document.getElementById(`dob-${index}`).setAttribute("max", today);
       //@ts-ignore
-      document.getElementById(`anniversaryDate-${index}`).setAttribute("max", today);
+      document
+        .getElementById(`anniversaryDate-${index}`)
+        .setAttribute("max", today);
     });
+  }, [visitors]);
+
+  useEffect(() => {
+    calculateTotalPrice();
   }, [visitors]);
 
   const notify = (message: string, type: string) => {
@@ -55,11 +77,35 @@ export default function Home() {
 
   const handleChange = (index: number, e: any) => {
     const { name, value } = e.target;
+    let newEndTime = visitors[index].endTime;
+
+    if (name === "startTime") {
+      const gameName = visitors[index].game;
+      const selectedGame = gameOptions.find((game) => game.name === gameName);
+
+      if (selectedGame) {
+        const durationInMinutes = selectedGame.duration;
+        const [hours, minutes] = value.split(":").map(Number);
+
+        // Calculate end time
+        const endTimeHours =
+          hours + Math.floor((minutes + durationInMinutes) / 60);
+        const endTimeMinutes = (minutes + durationInMinutes) % 60;
+
+        // Format end time
+        newEndTime = `${String(endTimeHours).padStart(2, "0")}:${String(
+          endTimeMinutes
+        ).padStart(2, "0")}`;
+      }
+    }
+
     const newVisitors = [...visitors];
     newVisitors[index] = {
       ...newVisitors[index],
       [name]: value,
+      endTime: newEndTime,
     };
+
     setVisitors(newVisitors);
   };
 
@@ -102,6 +148,17 @@ export default function Home() {
     setOrderId(uuidv4());
   };
 
+  const calculateTotalPrice = () => {
+    let total = 0;
+    visitors.forEach((visitor) => {
+      if (visitor.game) {
+        // @ts-ignore
+        total += gamePrices[visitor.game] * (1 - discount);
+      }
+    });
+    setTotalPrice(total);
+  };
+
   return (
     <div className="min-w-screen min-h-screen bg-white flex items-center flex-col justify-between">
       <div className="bg-white text-gray-800 overflow-hidden relative flex-grow">
@@ -136,46 +193,50 @@ export default function Home() {
                   {`Visitor ${index + 1}`}
                 </h2>
                 <div className="py-4">
-                  <label className="block text-orange-600">Phone No.</label>
+                  <label className="block text-orange-600">Phone No. *</label>
                   <input
                     type="text"
                     name="phoneNo"
                     value={visitor.phoneNo}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your mobile number"
+                    required
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
                 <div className="py-4">
-                  <label className="block text-orange-600">Email ID</label>
+                  <label className="block text-orange-600">Email ID *</label>
                   <input
                     type="email"
                     name="emailId"
                     value={visitor.emailId}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Email ID"
+                    required
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
                 <div className="py-4">
-                  <label className="block text-orange-600">Name</label>
+                  <label className="block text-orange-600">Name *</label>
                   <input
                     type="text"
                     name="name"
                     value={visitor.name}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Name"
+                    required
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
                 <div className="py-4">
-                  <label className="block text-orange-600">Address</label>
+                  <label className="block text-orange-600">Address *</label>
                   <input
                     type="text"
                     name="addressLine1"
                     value={visitor.addressLine1}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Address line 1"
+                    required
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                   <input
@@ -222,19 +283,42 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="py-4">
-                  <label className="block text-orange-600">Select Game</label>
+                  <label className="block text-orange-600">Select Game *</label>
                   <select
                     name="game"
                     value={visitor.game}
                     onChange={(e) => handleChange(index, e)}
+                    required
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   >
+                    <option value="">Select a Game</option>
                     {gameOptions.map((option, idx) => (
-                      <option key={idx} value={option}>
-                        {option}
+                      <option key={idx} value={option.name}>
+                        {option.name}
                       </option>
                     ))}
                   </select>
+                </div>
+                <div className="py-4">
+                  <label className="block text-orange-600">Start Time *</label>
+                  <input
+                    type="time"
+                    name="startTime"
+                    value={visitor.startTime}
+                    onChange={(e) => handleChange(index, e)}
+                    required
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
+                  />
+                </div>
+                <div className="py-4">
+                  <label className="block text-orange-600">End Time</label>
+                  <input
+                    type="time"
+                    name="endTime"
+                    value={visitor.endTime}
+                    readOnly // Prevent user input
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
+                  />
                 </div>
               </div>
             ))}
@@ -264,6 +348,56 @@ export default function Home() {
                 zone and release the management from any liability. My health is
                 good, and I agree to follow staff instructions.
               </p>
+            </div>
+            <div className="my-8">
+              <h2 className="text-xl font-bold text-orange-600 mb-4">
+                Your Total
+              </h2>
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border-b-2 border-orange-600 pb-2">Game</th>
+                    <th className="border-b-2 border-orange-600 pb-2">Price</th>
+                    <th className="border-b-2 border-orange-600 pb-2">
+                      Discount
+                    </th>
+                    <th className="border-b-2 border-orange-600 pb-2">
+                      Player
+                    </th>
+                    <th className="border-b-2 border-orange-600 pb-2">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visitors.map(
+                    (visitor, index) =>
+                      visitor.game && (
+                        <tr key={index}>
+                          <td className="py-2">{visitor.game}</td>
+                          <td className="py-2">
+                            {
+                              // @ts-ignore
+                              gamePrices[visitor.game]
+                            }
+                          </td>
+                          <td className="py-2">{discount * 100}%</td>
+                          <td className="py-2">1</td>
+                          <td className="py-2">
+                            {
+                              // @ts-ignore
+                              gamePrices[visitor.game] * (1 - discount)
+                            }
+                          </td>
+                        </tr>
+                      )
+                  )}
+                  <tr>
+                    <td colSpan={4} className="text-right font-bold py-2">
+                      Payable amount
+                    </td>
+                    <td className="py-2">{totalPrice}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div>
               <button
