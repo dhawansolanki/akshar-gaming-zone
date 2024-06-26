@@ -18,8 +18,7 @@ export default function Home() {
     name: "",
   };
 
-  const [members, setMembers] = useState([initialMember]);
-
+  const [members, setMembers] = useState([]);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   useEffect(() => {
@@ -28,28 +27,46 @@ export default function Home() {
     const token = cookies.get("token");
     if (!userId || !identifier || !token) {
       router.push("/login");
+      return;
     }
 
     const fetchUserDetails = async () => {
       try {
-        const userId = cookies.get("userId");
-        if (userId) {
-          const response = await axios.get(
-            `https://api.aksharenterprise.net/user/${userId}`
-          );
-          const userData = response.data;
-          setMembers((prevMembers) => [
-            {
-              ...prevMembers[0],
-              phoneNo: userData.phoneNo,
-              emailId: userData.emailId,
-              name: userData.name,
-            },
-            ...prevMembers.slice(1),
-          ]);
-        }
+        const userResponse = await axios.get(
+          `https://api.aksharenterprise.net/user/${userId}`
+        );
+        const userData = userResponse.data;
+
+        const childrenResponse = await axios.post(
+          "https://api.aksharenterprise.net/member/group",
+          {
+            parentId: userId,
+          }
+        );
+        const childMemberData = childrenResponse.data;
+
+        const parentMember = {
+          userId: userData.userId,
+          phoneNo: userData.phoneNo,
+          emailId: userData.emailId,
+          name: userData.name,
+          fetchedFromApi: true,
+        };
+
+        const childMembers = childMemberData.map((child: any) => ({
+          userId: child.userId,
+          phoneNo: child.phoneNo,
+          emailId: child.emailId,
+          name: child.name,
+          fetchedFromApi: true,
+        }));
+        // @ts-ignore
+        setMembers([parentMember, ...childMembers]);
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        console.error(
+          "Error fetching user details or children members:",
+          error
+        );
       }
     };
 
@@ -68,12 +85,15 @@ export default function Home() {
 
   const handleAddMember = () => {
     setMembers([
+      // @ts-ignore
       ...members,
+      // @ts-ignore
       {
         userId: uuidv4(),
         phoneNo: "",
         emailId: "",
         name: "",
+        fetchedFromApi: false,
       },
     ]);
   };
@@ -94,8 +114,7 @@ export default function Home() {
       );
       if (response.status === 200) {
         notify("Form submitted successfully!");
-        // Reset form after successful submission if needed
-        setMembers([initialMember]);
+        window.location.reload();
         setAgreeToTerms(false);
       } else {
         notify("Error submitting form!");
@@ -144,9 +163,11 @@ export default function Home() {
                   <input
                     type="text"
                     name="phoneNo"
+                    // @ts-ignore
                     value={member.phoneNo}
                     onChange={(e) => handleMemberChange(index, e)}
-                    readOnly={index === 0}
+                    // @ts-ignore
+                    readOnly={member.fetchedFromApi} // Make field readonly if fetched from API
                     placeholder="Enter your mobile number"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
@@ -156,9 +177,11 @@ export default function Home() {
                   <input
                     type="email"
                     name="emailId"
+                    // @ts-ignore
                     value={member.emailId}
                     onChange={(e) => handleMemberChange(index, e)}
-                    readOnly={index === 0}
+                    // @ts-ignore
+                    readOnly={member.fetchedFromApi} // Make field readonly if fetched from API
                     placeholder="Enter your Email ID"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
@@ -168,9 +191,11 @@ export default function Home() {
                   <input
                     type="text"
                     name="name"
+                    // @ts-ignore
                     value={member.name}
                     onChange={(e) => handleMemberChange(index, e)}
-                    readOnly={index === 0}
+                    // @ts-ignore
+                    readOnly={member.fetchedFromApi} // Make field readonly if fetched from API
                     placeholder="Enter your Name"
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
@@ -214,10 +239,12 @@ export default function Home() {
             </div>
             <div>
               <button
-              onClick={(e:any)=>{window.location.href="/ticket"}}
+                onClick={() => {
+                  window.location.href = "/ticket";
+                }}
                 className="w-full bg-orange-600 text-white py-3 rounded-full mt-4"
               >
-                Proceed to Ticker Counter
+                Proceed to Ticket Counter
               </button>
             </div>
           </form>
