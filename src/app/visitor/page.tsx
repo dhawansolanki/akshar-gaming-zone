@@ -4,8 +4,10 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const gameOptions = [
     { name: "Air Hockey", duration: 15 },
     { name: "Box Cricket", duration: 20 },
@@ -155,7 +157,7 @@ export default function Home() {
     try {
       const response = await axios.post(
         "https://api.aksharenterprise.net/visitor",
-        { visitors, agreeToTerms, orderId },
+        { visitors, agreeToTerms, orderId, totalPrice },
         {
           headers: {
             "Content-Type": "application/json",
@@ -165,6 +167,7 @@ export default function Home() {
 
       if (response.status === 200) {
         notify("Form submitted successfully", "success");
+        router.push(`/payment/${orderId}`, {});
         resetForm();
       } else {
         notify("Error submitting form", "error");
@@ -447,7 +450,8 @@ export default function Home() {
                 I affirm that I have read and understood the rules of the game
                 zone and agree to abide by them. I acknowledge the inherent
                 risks involved in participating in activities within the game
-                zone and release the management from any liability. My health is
+                zone and release the management from any liability and No
+                interchange between games and person is allowed. My health is
                 good, and I agree to follow staff instructions.
               </p>
             </div>
