@@ -17,7 +17,7 @@ const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
   const handleOrder = async (orderId: string) => {
     try {
       const response = await axios.post<ResponseData>(
-        `http://localhost:5050/visitor/payment/${orderId}`
+        `https://api.aksharenterprise.net/visitor/payment/${orderId}`
       );
       setData(response.data);
     } catch (error) {
