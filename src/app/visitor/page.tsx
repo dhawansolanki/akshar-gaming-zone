@@ -17,6 +17,39 @@ export default function Home() {
     { name: "Table Tennis", duration: 60 },
   ];
 
+  const gameDetails = {
+    "Air Hockey": { price: 100, quantity: 1 },
+    "Table Tennis": { price: 100, quantity: 1 },
+    Chess: { price: 100, quantity: 1 },
+    Carrom: { price: 100, quantity: 1 },
+    Pool: { price: 300, quantity: 1 },
+    "Box Cricket": { price: 100, quantity: 1 },
+    Ludo: { price: 100, quantity: 1 },
+    "Snakes & Ladders": { price: 100, quantity: 1 },
+  };
+
+  const morningDiscounts = {
+    "Air Hockey": 0.5,
+    "Table Tennis": 0.5,
+    Chess: 0.5,
+    Carrom: 0.5,
+    Pool: 0.5,
+    "Box Cricket": 0.5,
+    Ludo: 0.7,
+    "Snakes & Ladders": 0.7,
+  };
+
+  const nightDiscounts = {
+    "Air Hockey": 0.3,
+    "Table Tennis": 0.3,
+    Chess: 0.3,
+    Carrom: 0.3,
+    Pool: 0.3,
+    "Box Cricket": 0.3,
+    Ludo: 0.5,
+    "Snakes & Ladders": 0.5,
+  };
+
   const initialVisitor = {
     userId: uuidv4(),
     phoneNo: "",
@@ -34,16 +67,16 @@ export default function Home() {
 
   const gamePrices = {
     "Air Hockey": 100,
-    "Box Cricket": 200,
-    Carrom: 50,
-    Chess: 75,
-    Ludo: 30,
-    Pool: 150,
-    "Snakes & Ladders": 40,
+    "Box Cricket": 100,
+    Carrom: 100,
+    Chess: 100,
+    Ludo: 100,
+    Pool: 300,
+    "Snakes & Ladders": 100,
     "Table Tennis": 100,
   };
 
-  const discount = 0.5; // 50% discount
+  const [discount, setDiscount] = useState(0); // 50% discount
 
   const [visitors, setVisitors] = useState([initialVisitor]);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
@@ -153,7 +186,25 @@ export default function Home() {
     visitors.forEach((visitor) => {
       if (visitor.game) {
         // @ts-ignore
-        total += gamePrices[visitor.game] * (1 - discount);
+        const { price, quantity } = gameDetails[visitor.game];
+        const [startHour] = visitor.startTime.split(":").map(Number);
+
+        let discount = 0;
+
+        // Determine if the selected time is morning or night
+        if (startHour >= 9 && startHour < 18) {
+          // Morning
+          // @ts-ignore
+          discount = morningDiscounts[visitor.game];
+          setDiscount(discount);
+        } else {
+          // Night
+          // @ts-ignore
+          discount = nightDiscounts[visitor.game];
+          setDiscount(discount);
+        }
+
+        total += price * quantity * (1 - discount);
       }
     });
     setTotalPrice(total);
@@ -331,24 +382,6 @@ export default function Home() {
                 + Add Visitor
               </button>
             </div>
-            <div className="mt-4">
-              <div className="flex items-center mt-12">
-                <input
-                  type="checkbox"
-                  name="agreeToTerms"
-                  checked={agreeToTerms}
-                  onChange={handleCheckboxChange}
-                  className="form-checkbox text-orange-600"
-                />
-              </div>
-              <p className="text-gray-500 text-sm">
-                I affirm that I have read and understood the rules of the game
-                zone and agree to abide by them. I acknowledge the inherent
-                risks involved in participating in activities within the game
-                zone and release the management from any liability. My health is
-                good, and I agree to follow staff instructions.
-              </p>
-            </div>
             <div className="my-8">
               <h2 className="text-xl font-bold text-orange-600 mb-4">
                 Your Total
@@ -398,6 +431,25 @@ export default function Home() {
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <div className="mt-4">
+              <div className="flex items-center mt-12">
+                <input
+                  type="checkbox"
+                  name="agreeToTerms"
+                  checked={agreeToTerms}
+                  onChange={handleCheckboxChange}
+                  required
+                  className="form-checkbox text-orange-600"
+                />
+              </div>
+              <p className="text-gray-500 text-sm">
+                I affirm that I have read and understood the rules of the game
+                zone and agree to abide by them. I acknowledge the inherent
+                risks involved in participating in activities within the game
+                zone and release the management from any liability. My health is
+                good, and I agree to follow staff instructions.
+              </p>
             </div>
             <div>
               <button
