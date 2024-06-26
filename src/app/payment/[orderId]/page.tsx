@@ -59,10 +59,10 @@ const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
             <span>{pricePayable}</span>
           </div>
         </div>
-        <h2 className="text-lg font-semibold mb-4">
+        {/* <h2 className="text-lg font-semibold mb-4">
           On Payment Verification you will receive tickets on your registered
           email or you will be contacted by our admin.
-        </h2>
+        </h2> */}
         {/* Uncomment and implement payment options if needed */}
         {/* <div className="space-y-4">
           <button className="w-full py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">
