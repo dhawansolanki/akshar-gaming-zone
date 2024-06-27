@@ -247,26 +247,30 @@ export default function Home() {
                   {`Visitor ${index + 1}`}
                 </h2>
                 <div className="py-4">
-                  <label className="block text-orange-600">Phone No. *</label>
+                  <label className="block text-orange-600">
+                    Phone No.{index == 0 ? "*" : ""}{" "}
+                  </label>
                   <input
                     type="text"
                     name="phoneNo"
                     value={visitor.phoneNo}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your mobile number"
-                    required
+                    {...(index === 0 ? { required: true } : {})}
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
                 <div className="py-4">
-                  <label className="block text-orange-600">Email ID *</label>
+                  <label className="block text-orange-600">
+                    Email ID {index == 0 ? "*" : ""}{" "}
+                  </label>
                   <input
                     type="email"
                     name="emailId"
                     value={visitor.emailId}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Email ID"
-                    required
+                    {...(index === 0 ? { required: true } : {})}
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                 </div>
@@ -283,14 +287,16 @@ export default function Home() {
                   />
                 </div>
                 <div className="py-4">
-                  <label className="block text-orange-600">Address *</label>
+                  <label className="block text-orange-600">
+                    Address {index == 0 ? "*" : ""}{" "}
+                  </label>
                   <input
                     type="text"
                     name="addressLine1"
                     value={visitor.addressLine1}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Enter your Address line 1"
-                    required
+                    {...(index === 0 ? { required: true } : {})}
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
                   <input
