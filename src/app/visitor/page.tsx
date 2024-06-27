@@ -158,7 +158,7 @@ export default function Home() {
   const checkAvailability = async (game: string, startTime: string) => {
     try {
       const response = await axios.post(
-        "http://localhost:5050/visitor/check-availability",
+        "https://api.aksharenterprise.net/visitor/check-availability",
         { game, startTime }
       );
       if (response.status === 200) {
