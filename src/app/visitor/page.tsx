@@ -154,8 +154,47 @@ export default function Home() {
     setAgreeToTerms(e.target.checked);
   };
 
+  // Function to check if the selected time slot is available
+  const checkAvailability = async (game: string, startTime: string) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5050/visitor/check-availability",
+        { game, startTime }
+      );
+      if (response.status === 200) {
+        // Time slot is available, proceed with booking
+        return true;
+      } else {
+        // Time slot is not available
+        return false;
+      }
+    } catch (error) {
+      console.error("Error checking availability:", error);
+      return false;
+    }
+  };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    // Check availability for each visitor
+    const availabilityPromises = visitors.map(async (visitor) => {
+      const isAvailable = await checkAvailability(
+        visitor.game,
+        visitor.startTime
+      );
+      return isAvailable;
+    });
+
+    // Wait for all availability checks to complete
+    const availabilities = await Promise.all(availabilityPromises);
+
+    // If any time slot is not available, notify user and abort submission
+    if (availabilities.some((available) => !available)) {
+      // Handle case where time slot is not available
+      alert(
+        "Selected time slot is not available. Please choose a different time."
+      );
+      return;
+    }
     setIsLoading(true);
     try {
       const response = await axios.post(
