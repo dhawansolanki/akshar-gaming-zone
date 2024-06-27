@@ -5,9 +5,11 @@ import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 import { useRouter } from "next/navigation";
+import { Circles } from "react-loader-spinner";
 
 export default function Home() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const gameOptions = [
     { name: "Air Hockey", duration: 15 },
     { name: "Box Cricket", duration: 20 },
@@ -154,6 +156,7 @@ export default function Home() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await axios.post(
         "https://api.aksharenterprise.net/visitor",
@@ -175,6 +178,8 @@ export default function Home() {
     } catch (error) {
       notify("Error submitting form", "error");
       console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -465,8 +470,16 @@ export default function Home() {
               <button
                 type="submit"
                 className="w-full bg-orange-600 text-white py-3 rounded-full mt-4"
+                disabled={isLoading}
               >
-                Proceed to Payment
+                {isLoading ? (
+                  <div className="flex justify-center items-center">
+                    <Circles color="#fff" height={20} width={20} />
+                    <span className="ml-2">Processing...</span>
+                  </div>
+                ) : (
+                  "Proceed to Payment"
+                )}
               </button>
             </div>
           </form>
