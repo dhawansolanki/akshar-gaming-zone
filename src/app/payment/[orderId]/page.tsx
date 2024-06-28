@@ -1,4 +1,5 @@
 "use client";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -17,10 +18,20 @@ interface ResponseData {
   addressLine1?: string;
   addressLine2?: string;
   addressLine3?: string;
+  status?: string;
 }
 
 const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
   const [data, setData] = useState<ResponseData | null>(null);
+  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
+
+  const notify = (message: string, type: string) => {
+    if (type === "success") {
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
+  };
 
   useEffect(() => {
     const fetchOrderData = async () => {
@@ -48,7 +59,12 @@ const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
         "https://api.aksharenterprise.net/visitor/payment/verify/update",
         { orderId, razorpay_order_id, razorpay_payment_id, razorpay_signature }
       );
-      console.log(data);
+      if (data.status == 200) {
+        notify(data?.data?.message, "success");
+        setIsPaymentSuccess(true);
+      } else {
+        notify("Payment Failed.", "error");
+      }
     } catch (error) {
       console.error(error);
     }
@@ -107,7 +123,24 @@ const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-orange-600">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="p-8 rounded-lg shadow-lg max-w-sm w-full">
+        <h1 className="text-xl text-center p-8">
+          {isPaymentSuccess == true || data?.status === "PAID"
+            ? ""
+            : "Payment is Pending"}
+        </h1>
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-bold">Your Total</h1>
         </div>
@@ -126,12 +159,18 @@ const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
           </div>
         </div>
         <div className="space-y-4">
-          <button
-            onClick={razorpayPayment}
-            className="w-full py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            Pay Now
-          </button>
+          {isPaymentSuccess == true || data?.status === "PAID" ? (
+            <button className="w-full py-2 bg-white border border-gray-300 rounded-lg text-[#336145] hover:bg-gray-100">
+              PAID
+            </button>
+          ) : (
+            <button
+              onClick={razorpayPayment}
+              className="w-full py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+            >
+              Pay Now
+            </button>
+          )}
         </div>
       </div>
     </div>
