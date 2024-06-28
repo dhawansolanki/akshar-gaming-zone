@@ -255,7 +255,8 @@ export default function Home() {
         total += price * quantity * (1 - discount);
       }
     });
-    setTotalPrice(total);
+    const roundedTotal = Math.round(total * 100) / 100;
+    setTotalPrice(roundedTotal);
   };
 
   return (
@@ -485,7 +486,7 @@ export default function Home() {
                           <td className="py-2">
                             {
                               // @ts-ignore
-                              gamePrices[visitor.game] * (1 - discount)
+                              Math.round((gamePrices[visitor.game] * (1 - discount) *100) /100)
                             }
                           </td>
                         </tr>
