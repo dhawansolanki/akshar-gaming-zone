@@ -412,8 +412,8 @@ export default function Home() {
                     type="date"
                     name="date"
                     id={`date-${index}`}
-                    value={visitor.date}
-                    onChange={(e) => handleChange(index, e)}
+                    value={new Date().toISOString().split("T")[0]}
+                    disabled
                     required
                     className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
                   />
