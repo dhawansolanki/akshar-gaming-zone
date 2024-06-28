@@ -240,7 +240,7 @@ export default function Home() {
             <div>
               <button
                 onClick={() => {
-                  window.location.href = "/ticket";
+                  window.location.href = "/visitor";
                 }}
                 className="w-full bg-orange-600 text-white py-3 rounded-full mt-4"
               >
