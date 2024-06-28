@@ -42,7 +42,7 @@ export default function Home() {
                 </div>
               </div>
             </a>
-            <a
+            {/* <a
               href="/"
               className="flex-1 flex items-start justify-center p-2 text-gray-500 hover:text-indigo-500"
             >
@@ -52,7 +52,7 @@ export default function Home() {
                   <span className="align-middle">Home Page</span>
                 </div>
               </div>
-            </a>
+            </a> */}
           </div>
         </div>
       </div>
