@@ -64,6 +64,7 @@ export default function Home() {
     addressLine3: "",
     dob: "",
     anniversaryDate: "",
+    date: "",
     game: "",
     startTime: "",
     endTime: "",
@@ -402,6 +403,20 @@ export default function Home() {
                       </option>
                     ))}
                   </select>
+                </div>
+                <div className="py-4">
+                  <label className="block text-orange-600">
+                    Visiting Date *
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    id={`date-${index}`}
+                    value={visitor.date}
+                    onChange={(e) => handleChange(index, e)}
+                    required
+                    className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-orange-600 rounded-full px-4 py-2"
+                  />
                 </div>
                 <div className="py-4">
                   <label className="block text-orange-600">Start Time *</label>
