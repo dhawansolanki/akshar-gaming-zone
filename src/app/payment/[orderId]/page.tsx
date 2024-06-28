@@ -9,6 +9,14 @@ interface OrderProps {
 
 interface ResponseData {
   totalPrice: number;
+  name?: string;
+  emailId?: string;
+  phoneNo?: string;
+  orderId?: string;
+  userId?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  addressLine3?: string;
 }
 
 const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
@@ -33,15 +41,62 @@ const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
   const gst = 0;
   const pricePayable = amount + gst;
 
+  const razorpayPayment = async () => {
+    const orderDetails = await createOrder(pricePayable);
+    try {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      script.onload = () => {
+        const options = {
+          key: "rzp_test_BcUc1fkMKdXXBc",
+          amount: pricePayable * 100, // in paisa
+          currency: "INR",
+          name: "Akshar Enterprise",
+          order_id: orderDetails.orderId,
+          description: "Akshar Game Zone",
+          handler: function (response: any) {
+            console.log(response);
+          },
+          prefill: {
+            name: data?.name || "",
+            email: data?.emailId || "",
+            contact: data?.phoneNo || "",
+          },
+          notes: {
+            orderId: data?.orderId || "",
+            userId: data?.userId || "",
+            addressLine1: data?.addressLine1 || "",
+            addressLine2: data?.addressLine2 || "",
+            addressLine3: data?.addressLine3 || "",
+          },
+          theme: {
+            color: "#EF4823",
+          },
+        };
+        const paymentObject = new (window as any).Razorpay(options);
+        paymentObject.open();
+      };
+      document.body.appendChild(script);
+    } catch (error) {
+      console.log("Failed to Load Razorpay Script.");
+    }
+  };
+
+  const createOrder = async (amount: number)=> {
+    try{
+      const response = await axios.post("httpS://api.aksharenterprise.net/razorpay/visitor/order/create", {
+        amount: amount
+      });
+      return response.data;
+    }catch(error){
+      console.log(error);
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-orange-600">
       <div className="p-8 rounded-lg shadow-lg max-w-sm w-full">
-        <img
-          src="/payment_qr.jpeg"
-          alt="Payment QR Code"
-          className="h-200 w-auto"
-        />
-        <br />
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-bold">Your Total</h1>
         </div>
@@ -59,22 +114,14 @@ const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
             <span>{pricePayable}</span>
           </div>
         </div>
-        {/* <h2 className="text-lg font-semibold mb-4">
-          On Payment Verification you will receive tickets on your registered
-          email or you will be contacted by our admin.
-        </h2> */}
-        {/* Uncomment and implement payment options if needed */}
-        {/* <div className="space-y-4">
-          <button className="w-full py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">
-            UPI/BHIM
+        <div className="space-y-4">
+          <button
+            onClick={razorpayPayment}
+            className="w-full py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            Pay Now
           </button>
-          <button className="w-full py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">
-            CREDIT/DEBIT CARD
-          </button>
-          <button className="w-full py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">
-            CASH
-          </button>
-        </div> */}
+        </div>
       </div>
     </div>
   );
