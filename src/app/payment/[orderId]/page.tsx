@@ -1,7 +1,7 @@
 "use client";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface OrderProps {
   params: { orderId: string };
@@ -22,28 +22,54 @@ interface ResponseData {
 const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
   const [data, setData] = useState<ResponseData | null>(null);
 
-  const handleOrder = async (orderId: string) => {
-    try {
-      const response = await axios.post<ResponseData>(
-        `https://api.aksharenterprise.net/visitor/payment/${orderId}`
-      );
-      setData(response.data);
-    } catch (error) {
-      console.error("Error fetching order data:", error);
-    }
-  };
-
   useEffect(() => {
-    handleOrder(orderId);
+    const fetchOrderData = async () => {
+      try {
+        const response = await axios.post<ResponseData>(
+          `https://api.aksharenterprise.net/visitor/payment/${orderId}`
+        );
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching order data:", error);
+      }
+    };
+    fetchOrderData();
   }, [orderId]);
 
   const amount = data?.totalPrice || 0;
   const gst = 0;
   const pricePayable = amount + gst;
 
-  const razorpayPayment = async () => {
-    const orderDetails = await createOrder(pricePayable);
+  const handlePaymentSuccess = async (response: any) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      response;
     try {
+      const data = await axios.post(
+        "https://api.aksharenterprise.net/visitor/payment/verify/update",
+        { orderId, razorpay_order_id, razorpay_payment_id, razorpay_signature }
+      );
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const createOrder = async (amount: number) => {
+    try {
+      const response = await axios.post(
+        "https://api.aksharenterprise.net/razorpay/visitor/order/create",
+        { amount }
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Failed to create Razorpay order:", error);
+      throw error; // Propagate error for handling
+    }
+  };
+
+  const razorpayPayment = async () => {
+    try {
+      const orderDetails = await createOrder(pricePayable);
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.async = true;
@@ -55,44 +81,29 @@ const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
           name: "Akshar Enterprise",
           order_id: orderDetails.orderId,
           description: "Akshar Game Zone",
-          handler: function (response: any) {
-            console.log(response);
-          },
+          handler: handlePaymentSuccess,
           prefill: {
-            name: data?.name || "",
-            email: data?.emailId || "",
-            contact: data?.phoneNo || "",
+            name: data?.name ?? "",
+            email: data?.emailId ?? "",
+            contact: data?.phoneNo ?? "",
           },
           notes: {
-            orderId: data?.orderId || "",
-            userId: data?.userId || "",
-            addressLine1: data?.addressLine1 || "",
-            addressLine2: data?.addressLine2 || "",
-            addressLine3: data?.addressLine3 || "",
+            orderId: data?.orderId ?? "",
+            userId: data?.userId ?? "",
+            addressLine1: data?.addressLine1 ?? "",
+            addressLine2: data?.addressLine2 ?? "",
+            addressLine3: data?.addressLine3 ?? "",
           },
-          theme: {
-            color: "#EF4823",
-          },
+          theme: { color: "#EF4823" },
         };
         const paymentObject = new (window as any).Razorpay(options);
         paymentObject.open();
       };
       document.body.appendChild(script);
     } catch (error) {
-      console.log("Failed to Load Razorpay Script.");
+      console.log("Failed to initialize Razorpay:", error);
     }
   };
-
-  const createOrder = async (amount: number)=> {
-    try{
-      const response = await axios.post("https://api.aksharenterprise.net/razorpay/visitor/order/create", {
-        amount: amount
-      });
-      return response.data;
-    }catch(error){
-      console.log(error);
-    }
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-orange-600">
