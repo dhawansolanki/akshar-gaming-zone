@@ -85,7 +85,7 @@ const Home: React.FC<OrderProps> = ({ params: { orderId } }) => {
 
   const createOrder = async (amount: number)=> {
     try{
-      const response = await axios.post("httpS://api.aksharenterprise.net/razorpay/visitor/order/create", {
+      const response = await axios.post("https://api.aksharenterprise.net/razorpay/visitor/order/create", {
         amount: amount
       });
       return response.data;
